@@ -1,5 +1,13 @@
 const fs = require('fs');
-const { User } = require('./user');
+
+class User {
+    constructor(name, id, socketID = null, isActive = false) {
+        this.name = name;
+        this.id = id;
+        this.isActive = isActive;
+        this.socketID = socketID;
+    }
+}
 
 const FILE_PATH = './users.json';
 let users = [];

@@ -38,11 +38,11 @@ function openDialog(e) {
         recipientName = elem.textContent;
 
         socket.emit('joinRoom', {
-            senderData: userData,
-            recipientData: {
-                name: recipientName
-            },
-            roomID: 'kekw'
+            userData,
+            roomData: {
+                type: 'personal',
+                recipient: recipientName
+            }
         });
     }
 }

@@ -9,6 +9,7 @@ function handleNewMessage({ text, senderData, recipientData }) {
 
 function handleRegUser(userData) {
     let user = um.getUser(userData) || um.addNewUser(userData);
+    user.socketID = userData.socketID;
     user.isActive = true;
 
     return user;
@@ -18,11 +19,8 @@ function handleDisconnect(userData) {
     let user = um.getUser(userData);
     if (user) {
         user.isActive = false;
+        user.socketID = null;
     }
-}
-
-function handleJoinRoom({ user, roomID }) {
-    // WIP
 }
 
 module.exports = { handleRegUser, handleNewMessage, handleDisconnect, handleJoinRoom };

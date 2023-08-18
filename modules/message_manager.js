@@ -1,21 +1,21 @@
 const fs = require('fs');
 
+function getRoomID(sender, recipient) {
+    let firstId, secondId;
+
+    if (sender.id > recipient.id) {
+        firstId = recipient.id;
+        secondId = sender.id;
+    }
+    else {
+        firstId = sender.id;
+        secondId = recipient.id;
+    }
+
+    return `${firstId}_${secondId}`;
+}
+
 module.exports = {
-    getMsgFilePath(sender, recipient) {
-        let firstId, secondId;
-
-        if (sender.id > recipient.id) {
-            firstId = recipient.id;
-            secondId = sender.id;
-        }
-        else {
-            firstId = sender.id;
-            secondId = recipient.id;
-        }
-
-        return `./messages/${firstId}_${secondId}.json`;
-    },
-
     saveMessage(msg, sender, recipient) {
         let msgFilePath = this.getMsgFilePath(sender, recipient);
         let output = {
@@ -39,8 +39,12 @@ module.exports = {
         }
     },
 
-    getMessages(sender, recipient) {
-        let msgFilePath = this.getMsgFilePath(sender, recipient);
-        return fs.existsSync(msgFilePath) ? fs.readFileSync(msgFilePath, 'utf8') : '[]';
+    getMessages(userData, roomData) {
+        let fileName = roomData.type === 'personal' ?
+                getRoomID(userData, roomData.recipient)
+                : roomData.id;
+        let msgFilePath = `./messages/${fileName}.json`;
+
+        return fs.existsSync(msgFilePath) ? JSON.parse(fs.readFileSync(msgFilePath, 'utf8')) : [];
     }
 }

@@ -27,7 +27,10 @@ app.get('/chat', (req, res) => {
 
     io.once('connection', socket => {
         socket.on('regUser', userData => {
-            handleRegUser(userData);
+            handleRegUser({
+                name: userData.name,
+                socketID: socket.id
+            });
             io.emit('requestUsersList');
         });
 
@@ -40,14 +43,15 @@ app.get('/chat', (req, res) => {
             });
         });
 
-        socket.on('joinRoom', ({ senderData, recipientData, roomID }) => {
-            let sender = um.getUser(senderData);
-            let recipient = um.getUser(recipientData);
-            let messages = JSON.parse( mm.getMessages(sender, recipient) )
-                            .map(msg => messageToHTML(msg, sender))
+        socket.on('joinRoom', ({ userData, roomData }) => {
+            if (roomData.type === 'personal') {
+                roomData.recipient = um.getUser({ name: roomData.recipient });
+            }
+
+            let user = um.getUser(userData);
+            let messages = mm.getMessages(userData, roomData)
+                            .map(msg => messageToHTML(msg, user))
                             .join('\n');
-            
-            console.log(sender, recipient);
 
             socket.emit('getMessages', messages);
         });
