@@ -4,15 +4,15 @@
   "description": "My chat application project",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app"
+    "start": "node app.js",
+    "dev": "supervisor app.js"
   },
   "author": "Khairullin Tahir",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "nodemon": "^3.0.1",
-    "socket.io": "^4.7.2"
+    "nanoid": "^3.0.0",
+    "socket.io": "^4.7.2",
+    "supervisor": "^0.12.0"
   }
 }

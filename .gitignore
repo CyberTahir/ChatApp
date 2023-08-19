@@ -1,5 +1,5 @@
 /node_modules
 /images
-/messages
+/db
 /users.json
 /assets/socket.io.min.js

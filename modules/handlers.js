@@ -23,4 +23,4 @@ function handleDisconnect(userData) {
     }
 }
 
-module.exports = { handleRegUser, handleNewMessage, handleDisconnect, handleJoinRoom };
+module.exports = { handleRegUser, handleNewMessage, handleDisconnect };
