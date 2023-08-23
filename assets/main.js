@@ -105,5 +105,7 @@ function sendMessage(event) {
 
 function leaveChat() {
     socket.emit('room:leave');
+    msgList.innerHTML = '';
+    roomInfo.innerHTML = '';
     currentRoom = undefined;
 }

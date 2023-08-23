@@ -51,9 +51,7 @@ module.exports = (io, socket) => {
 
     const removeUser = () => {
         let user = users.find(user => user.id === socket.user.id);
-        if (user) {
-            user.isActive = false;
-        }
+        user.isActive = false;
 
         io.emit('requestUsers');
     };
