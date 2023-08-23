@@ -66,13 +66,15 @@ function openDialog(event) {
     socket.emit('room:join', room);
     socket.emit('message:get');
 
-    setRoomInfo({
-        name: elem.innerHTML,
-        type: room.type,
-        id: room.id,
-        online: elem.classList.contains('active')
-    });
-    roomJoined = true;
+    if (!elem.classList.contains('current')) {
+        setRoomInfo({
+            name: elem.innerHTML,
+            type: room.type,
+            id: room.id,
+            online: elem.classList.contains('active')
+        });
+        roomJoined = true;
+    }
 }
 
 socket.on('request:message', () => {
