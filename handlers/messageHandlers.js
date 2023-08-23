@@ -2,28 +2,36 @@ const db = require('../modules/localDB');
 const { messageToHTML } = require('../modules/converter');
 
 module.exports = (io, socket) => {
-    const getMessages = (user) => {
-        let messages = db
-            .open(`db/messages/${socket.roomID}.json`)
-            .read()
-            .map(message => messageToHTML(message, user))
-            .join('\n');
-
-        io.in(socket.roomID).emit('messages', messages);
+    const openMessagesFile = () => {
+        let { type, id } = socket.room;
+        return db.open(`db/rooms/${type}/${id}.json`);
     };
 
-    const addMessage = (message) => {
-        let messages = db.open('db/messages.json')
-            .read();
+    const getMessages = () => {
+        if (!socket.room) {
+            return;
+        }
+
+        let messages = openMessagesFile()
+            .read()
+            .map(message => messageToHTML(message, socket.user))
+            .join('\n');
+
+        socket.emit('messages', messages);
+    };
+
+    const addMessage = (messageText) => {
+        let messages = openMessagesFile().read();
         
         messages.push({
-            messageID: nanoid(8),
-            createdAt: new Date(),
-            ...message
+            senderID: socket.user.id,
+            senderName: socket.user.name,
+            messageText,
+            createdAt: new Date()
         });
 
         db.write(messages);
-        getMessages();
+        io.in(socket.room.id).emit('request:message');
     };
 
     socket.on('message:get', getMessages);

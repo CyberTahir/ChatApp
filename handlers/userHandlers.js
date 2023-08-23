@@ -1,46 +1,38 @@
-// const { nanoid } = require('nanoid');
-const fs = require('fs');
+const { nanoid } = require('nanoid');
 const { userToHTML } = require('../modules/converter');
+const db = require('../modules/localDB');
 
 class User {
-    constructor(name, id, socketID = null, isActive = false) {
+    constructor(name, id, isActive = false) {
         this.name = name;
         this.id = id;
         this.isActive = isActive;
-        this.socketID = socketID;
     }
 }
 
 const FILE_PATH = './db/users.json';
-const users = JSON.parse(fs.readFileSync(FILE_PATH, 'utf8')).map(userData => new User(userData.name, userData.id));
+const users = db.open(FILE_PATH)
+                .read()
+                .map(userData => new User(userData.name, userData.id));
+
+const saveUsers = () => {
+    db.open(FILE_PATH)
+        .write( users.map(user => ({ name: user.name, id: user.id }) ) );
+};
 
 module.exports = (io, socket) => {
-    const getUsers = (sender) => {
-        let userList = users.map(user => userToHTML(user, sender)).join('\n');
+    const getUsers = () => {
+        let userList = users.map(user => userToHTML(user, socket.user)).join('\n');
 
-        io.in(socket.roomID).emit('users', {
-            html: userList,
-            user: {
-                name: sender.name,
-                id: sender.id
-            }
-        });
+        socket.emit('users', userList);
     };
 
-    const saveUsers = () => {
-        fs.writeFileSync(
-            FILE_PATH,
-            JSON.stringify( users.map(user => ({ name: user.name, id: user.id }) ) ),
-            'utf8'
-        );
-    };
+    const regUser = (name) => {
+        let user = users.find(_user => _user.name === name);
 
-    const addUser = ({ name }) => {
-        let user = users.find(user => user.name === name);
-
-        if (user === undefined) {
+        if (!user) {
             let userID = nanoid(6);
-            user = new User(username, userID, socket.id, true);
+            user = new User(name, userID, true);
             users.push(user);
 
             saveUsers();
@@ -49,19 +41,24 @@ module.exports = (io, socket) => {
             user.isActive = true;
         }
 
-        getUsers(user);
+        socket.user = {
+            name: user.name,
+            id: user.id
+        };
+        
+        io.emit('request:users');
     };
 
-    const removeUser = (userID) => {
-        let user = users.find( user => user.id === userID );
+    const removeUser = () => {
+        let user = users.find(user => user.id === socket.user.id);
         if (user) {
             user.isActive = false;
         }
 
-        getUsers();
+        io.emit('requestUsers');
     };
 
+    socket.on('user:join', regUser);
     socket.on('user:get', getUsers);
-    socket.on('user:add', addUser);
     socket.on('user:leave', removeUser);
 };

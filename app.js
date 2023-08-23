@@ -5,28 +5,20 @@ const server = require('http').createServer(app);
 const port = process.env.PORT || 4000;
 const io = require('socket.io')(server, {
     cors: {
-        origin: '*' // `http://localhost:${port}`
+        origin: `http://localhost:${port}`
     }
 });
 
-const log = console.log;
-
 const registerMessageHandlers = require('./handlers/messageHandlers');
 const registerUserHandlers = require('./handlers/userHandlers');
+const registerRoomHandlers = require('./handlers/roomHandlers');
 
 function onConnection(io, socket) {
-    log('User connected ', socket.id);
-
-    let { roomID } = socket.handshake.query;
-    socket.roomID = roomID;
-    socket.join(roomID);
-
     registerMessageHandlers(io, socket);
     registerUserHandlers(io, socket);
+    registerRoomHandlers(io, socket);
 
     socket.on('disconnect', () => {
-        log('User disconnected ', socket.id);
-
         socket.leave(socket.roomID);
     });
 }
@@ -41,4 +33,6 @@ app.get('/chat', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-server.listen(port);
+server.listen(port, () => {
+    console.log(`Сервер запущен! http://localhost:${port}`);
+});
