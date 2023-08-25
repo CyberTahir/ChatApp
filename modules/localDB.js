@@ -1,6 +1,5 @@
 const fs = require('fs');
 const DEFAULT_DATA = '[]';
-const CHATS_PATH = 'db/rooms';
 
 let filePath;
 
@@ -16,22 +15,22 @@ module.exports = {
     },
 
     read() {
-        let data = fs.readFileSync(filePath, { encoding: 'utf-8' });
-        return JSON.parse(data);
+        try {
+            return JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
+        }
+        catch (e) {
+            return [];
+        }
     },
 
     write(data) {
-        fs.writeFileSync(filePath, JSON.stringify(data), { encoding: 'utf-8' });
-        return this;
-    },
-
-    openPrivate(firstId, secondId) {
-        filePath = CHATS_PATH + `/private/${secondId}_${firstId}.json`;
-
-        if (!fs.existsSync(filePath)) {
-            filePath = CHATS_PATH + `/private/${firstId}_${secondId}.json`;
+        try {
+            fs.writeFileSync(filePath, JSON.stringify(data), { encoding: 'utf-8' });
         }
-
-        return this.open(filePath);
+        catch(e) {
+            console.log(e);
+        }
+        
+        return this;
     }
 };

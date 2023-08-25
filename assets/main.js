@@ -1,5 +1,6 @@
-const msgList = document.getElementById('msg-list');
-const msgText = document.getElementById('msg-text');
+const msgList = document.getElementById('message-list');
+const msgText = document.getElementById('message-field');
+const form = document.getElementById('message-form');
 const usersList = document.getElementById('user-list');
 const roomsList = document.getElementById('room-list');
 const roomInfo = document.getElementById('room-info');
@@ -30,7 +31,7 @@ socket.on('rooms', (html) => {
 
 function setRoomInfo(room) {
     let roomName = document.createElement('p');
-    roomName.classList.add('name');
+    roomName.classList.add('room-name');
     roomName.textContent = room.name;
 
     let onlineStatus = document.createElement('p');
@@ -40,9 +41,11 @@ function setRoomInfo(room) {
         let status = room.online ? 'online' : 'offline';
         onlineStatus.classList.add(status);
         onlineStatus.textContent = status;
+        msgList.classList.remove('public');
     }
     else {
         onlineStatus.textContent = 'public chat';
+        msgList.classList.add('public');
     }
 
     roomInfo.innerHTML = '';
@@ -82,24 +85,25 @@ socket.on('request:message', () => {
 });
 socket.on('messages', (data) => {
     msgList.innerHTML = data;
+    msgList.scrollTop = msgList.scrollHeight;
 });
 
 function sendMessage(event) {
     event.preventDefault();
 
-    if (!roomJoined) {
+    if (!currentRoom) {
         return;
     }
 
-    let msg = msgText.value;
+    let message = msgText.value;
     msgText.value = '';
 
-    let msgElement = document.createElement('li');
-    msgElement.innerHTML = msg;
-    msgElement.classList.add('sender-msg');
+    let messageElement = document.createElement('li');
+    messageElement.innerHTML = message;
+    messageElement.classList.add('sender-message');
 
-    socket.emit('message:add', msg);
-    msgList.appendChild(msgElement);
+    socket.emit('message:add', message);
+    msgList.appendChild(messageElement);
     msgText.focus();
 }
 
@@ -109,3 +113,9 @@ function leaveChat() {
     roomInfo.innerHTML = '';
     currentRoom = undefined;
 }
+
+form.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        sendMessage(event);
+    }
+});

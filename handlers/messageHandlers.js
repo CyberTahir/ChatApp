@@ -13,22 +13,23 @@ module.exports = (io, socket) => {
         }
 
         let messages = openMessagesFile()
-            .read()
-            .map(message => messageToHTML(message, socket.user))
-            .join('\n');
+                .read()
+                .map(message => messageToHTML(message, socket.user, socket.room.type))
+                .join('\n');
 
         socket.emit('messages', messages);
     };
 
     const addMessage = (messageText) => {
-        let messages = openMessagesFile().read();
-        
-        messages.push({
+        let newMessage = {
             senderID: socket.user.id,
-            senderName: socket.user.name,
+            senderName: socket.room.type === 'public' ? socket.user.name : undefined,
             messageText,
             createdAt: new Date()
-        });
+        };
+        
+        let messages = openMessagesFile().read();
+        messages.push(newMessage);
 
         db.write(messages);
         io.in(socket.room.id).emit('request:message');

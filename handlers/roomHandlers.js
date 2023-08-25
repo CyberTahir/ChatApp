@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { parse } = require('path');
+const { roomToHTML } = require('../modules/converter');
 
 module.exports = (io, socket) => {
     const getRoomID = (firstID, secondID) => {
@@ -27,10 +27,7 @@ module.exports = (io, socket) => {
 
     const getRooms = () => {
         let rooms = fs.readdirSync('db/rooms/public')
-                    .map(room => {
-                        let name = parse(room).name;
-                        return `<li data-room-type='public' data-room-id='${name}'>${name}</li>`;
-                    })
+                    .map(roomToHTML)
                     .join('\n');
 
         socket.emit('rooms', rooms);

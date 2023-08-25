@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css">
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <link rel="stylesheet" href="/style.css">
     <title>ChatApp</title>
 </head>
 <body>
-    <div class="sidebar" onclick="openDialog(event)">
+    <nav class="sidebar" onclick="openDialog(event)">
         <div id="users">
             <h2>Users</h2>
             <ul id="user-list"></ul>
@@ -19,25 +24,25 @@
             <h2>Rooms</h2>
             <ul id="room-list"></ul>
         </div>
-    </div>
+    </nav>
 
     <main>
         <header>
             <div id="room-info"></div>
-            <button class="leave-btn" onclick="leaveChat(event)">Leave</button>
+            <button class="leave-btn" onclick="leaveChat(event)">Leave chat</button>
         </header>
 
-        <ul id="msg-list"></ul>
+        <ul id="message-list"></ul>
 
         <footer>
-            <form id="msg-form" onsubmit="sendMessage(event)">
-                <textarea type="text" id="msg-text"></textarea>
+            <form id="message-form" onsubmit="sendMessage(event)">
+                <textarea type="text" id="message-field"></textarea>
                 <button id="send-btn">&#9658;</button>
             </form>
         </footer>
     </main>
 
-    <script src="socket.io.min.js"></script>
-    <script src="main.js"></script>
+    <script src="/socket.io.min.js"></script>
+    <script src="/main.js"></script>
 </body>
 </html>
