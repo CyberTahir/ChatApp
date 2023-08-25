@@ -1,4 +1,5 @@
 const fs = require('fs');
+const db = require('../modules/localDB');
 const { roomToHTML } = require('../modules/converter');
 
 module.exports = (io, socket) => {
@@ -26,7 +27,8 @@ module.exports = (io, socket) => {
     };
 
     const getRooms = () => {
-        let rooms = fs.readdirSync('db/rooms/public')
+        let rooms = db.open('db/rooms/public')
+                    .read()
                     .map(roomToHTML)
                     .join('\n');
 

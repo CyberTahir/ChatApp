@@ -1,5 +1,8 @@
 const fs = require('fs');
 const DEFAULT_DATA = '[]';
+const options = {
+    encoding: 'utf-8'
+};
 
 let filePath;
 
@@ -8,7 +11,7 @@ module.exports = {
         filePath = path;
 
         if (!fs.existsSync(filePath)) {
-            fs.writeFileSync(filePath, DEFAULT_DATA, { encoding: 'utf-8' });
+            fs.writeFileSync(filePath, DEFAULT_DATA, options);
         }
 
         return this;
@@ -16,7 +19,16 @@ module.exports = {
 
     read() {
         try {
-            return JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
+            let data;
+
+            if ( fs.statSync(filePath).isDirectory() ) {
+                data = fs.readdirSync(filePath, options);
+            }
+            else {
+                data = JSON.parse(fs.readFileSync(filePath, options));
+            }
+
+            return data;
         }
         catch (e) {
             return [];
@@ -25,7 +37,7 @@ module.exports = {
 
     write(data) {
         try {
-            fs.writeFileSync(filePath, JSON.stringify(data), { encoding: 'utf-8' });
+            fs.writeFileSync(filePath, JSON.stringify(data), options);
         }
         catch(e) {
             console.log(e);
