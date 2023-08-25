@@ -2,7 +2,7 @@
 
 This chat application built using Node.js, Express and Socket.IO.
 
-![alt text](https://dl.dropboxusercontent.com/scl/fi/1kjklovj8x7eqdqh7k52k/ChatApp.png?rlkey=l17kj40q9i8p475ar8kzguekj&dl=0)
+![alt text](https://dl.dropboxusercontent.com/scl/fi/fax3kzvk47w8etfhoodyu/ChatApp.png?rlkey=yb8krvb07ioicaklyg9627yzk&dl=0)
 
 
 # Features
@@ -32,6 +32,6 @@ Make sure you have Node.js and npm install.
 
 ## Sockets
     
-   Having an active connection opened between the client and the server so client can send and receive data. This allows             real-time communication using TCP sockets. This is made possible by Socket.io.
+   Having an active connection opened between the client and the server so client can send and receive data. This allows real-time communication using TCP sockets. This is made possible by Socket.io.
 
    The client starts by connecting to the server through a socket(maybe also assigned to a specific namespace). Once connections is successful, client and server can emit and listen to events.
