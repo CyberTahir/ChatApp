@@ -21,7 +21,7 @@ This chat application built using Node.js, Express and Socket.IO.
 Make sure you have Node.js and npm install.
 
  1. Clone or download the repository
-    <pre>gir clone https://github.com/CyberTahir/ChatApp.git
+    <pre>git clone https://github.com/CyberTahir/ChatApp.git
     $ cd ChatApp</pre>
  2. Install dependencies
     <pre>npm install</pre>
